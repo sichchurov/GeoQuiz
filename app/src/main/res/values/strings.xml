@@ -14,4 +14,6 @@
     <string name="prev_button">Prev</string>
     <string name="true_answer">You are right</string>
     <string name="false_answer">You are wrong</string>
+    <string name="try_again">Try again?</string>
+    <string name="statistic">Wrong answers: %1$s, Right answers: %2$s</string>
 </resources>

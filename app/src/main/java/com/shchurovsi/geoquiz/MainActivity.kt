@@ -34,13 +34,11 @@ class MainActivity : AppCompatActivity() {
             btFalse.setOnClickListener { falseAnswer() }
             btNext.setOnClickListener { nextQuestion() }
             btPrev.setOnClickListener { prevQuestion() }
+            btRestartQuiz?.setOnClickListener { restartQuiz() }
         }
 
     }
 
-    /**
-     * После нажатия на любую кнопку ответа, попыток на ответ больше не будет
-     */
     private fun trueAnswer() {
         checkAnswer(true)
         showResult()
@@ -51,37 +49,71 @@ class MainActivity : AppCompatActivity() {
         showResult()
     }
 
+    /**
+     * Hide true and false buttons for showing the result
+     */
     private fun showResult() = with(binding) {
         btTrue.visibility = View.GONE
         btFalse.visibility = View.GONE
         tvResult.visibility = View.VISIBLE
     }
 
+    /**
+     * Hide the result for showing buttons with a question
+     */
     private fun hideResult() = with(binding) {
+        tvTitle.visibility = View.VISIBLE
         btTrue.visibility = View.VISIBLE
         btFalse.visibility = View.VISIBLE
         tvResult.visibility = View.GONE
     }
 
+    /**
+     * After the last question the quiz is finished
+     */
     private fun nextQuestion() {
-
         try {
             currentIndex++
             updateQuestion()
             hideResult()
         } catch (e: IndexOutOfBoundsException) {
-            binding.apply {
-                showResult()
-                tvTitle.visibility = View.GONE
-                btNext.visibility = View.GONE
-                btPrev.visibility = View.GONE
-                tvResult.text = "Wrong answers: $incorrectAnswers, Right answers: $correctAnswers"
-            }
-
+            finishQuiz()
         }
 
     }
 
+    /**
+     * Show statistic with the answers
+     */
+    private fun finishQuiz() {
+        binding.apply {
+            showResult()
+            tvTitle.visibility = View.GONE
+            btNext.visibility = View.GONE
+            btPrev.visibility = View.GONE
+            btRestartQuiz?.visibility = View.VISIBLE
+            tvResult.text = getString(R.string.statistic, "$incorrectAnswers", "$correctAnswers")
+        }
+    }
+
+    /**
+     * Here is an opportunity to restart a quiz
+     */
+    private fun restartQuiz() {
+        incorrectAnswers = 0
+        correctAnswers = 0
+        currentIndex = 0
+
+        binding.apply {
+            hideResult()
+            updateQuestion()
+            btNext.visibility = View.VISIBLE
+            btPrev.visibility = View.VISIBLE
+            btRestartQuiz?.visibility = View.GONE
+        }
+    }
+
+    // TODO show the questions that has already answered
     private fun prevQuestion() {
         if (currentIndex == 0) {
             return
@@ -109,5 +141,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // TODO После того как пользователь введет ответ на все вопросы, отобразите уведомление с процентом правильных ответов
 }
