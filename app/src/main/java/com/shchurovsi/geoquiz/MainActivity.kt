@@ -3,24 +3,16 @@ package com.shchurovsi.geoquiz
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.shchurovsi.geoquiz.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val questionBank = arrayListOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast, false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americas, true),
-        Question(R.string.question_asia, true)
-    )
-
-    private var currentIndex = 0
-    private var correctAnswers = 0
-    private var incorrectAnswers = 0
+    private val quizViewModel: QuizViewModel by lazy {
+        ViewModelProvider(this)[QuizViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +28,6 @@ class MainActivity : AppCompatActivity() {
             btPrev.setOnClickListener { prevQuestion() }
             btRestartQuiz?.setOnClickListener { restartQuiz() }
         }
-
     }
 
     private fun trueAnswer() {
@@ -73,7 +64,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun nextQuestion() {
         try {
-            currentIndex++
+            quizViewModel.moveNext()
             updateQuestion()
             hideResult()
         } catch (e: IndexOutOfBoundsException) {
@@ -92,7 +83,11 @@ class MainActivity : AppCompatActivity() {
             btNext.visibility = View.GONE
             btPrev.visibility = View.GONE
             btRestartQuiz?.visibility = View.VISIBLE
-            tvResult.text = getString(R.string.statistic, "$incorrectAnswers", "$correctAnswers")
+            tvResult.text = getString(
+                R.string.statistic,
+                "${quizViewModel.incorrectAnswers}",
+                "${quizViewModel.correctAnswers}"
+            )
         }
     }
 
@@ -100,9 +95,9 @@ class MainActivity : AppCompatActivity() {
      * Here is an opportunity to restart a quiz
      */
     private fun restartQuiz() {
-        incorrectAnswers = 0
-        correctAnswers = 0
-        currentIndex = 0
+        quizViewModel.incorrectAnswers = 0
+        quizViewModel.correctAnswers = 0
+        quizViewModel.currentIndex = 0
 
         binding.apply {
             hideResult()
@@ -115,28 +110,27 @@ class MainActivity : AppCompatActivity() {
 
     // TODO show the questions that has already answered
     private fun prevQuestion() {
-        if (currentIndex == 0) {
+        if (quizViewModel.currentIndex == 0) {
             return
         }
-        currentIndex = (currentIndex - 1) % questionBank.size
+        quizViewModel.moveBack()
         updateQuestion()
         hideResult()
     }
 
     private fun updateQuestion() {
-        val questionTextResId = questionBank[currentIndex].textResId
+        val questionTextResId = quizViewModel.currentQuestionText
         binding.tvTitle.setText(questionTextResId)
     }
 
-
     private fun checkAnswer(userAnswer: Boolean) = with(binding) {
-        val rightAnswer = questionBank[currentIndex].answer
+        val rightAnswer = quizViewModel.currentQuestionAnswer
 
         if (userAnswer == rightAnswer) {
-            correctAnswers++
+            quizViewModel.correctAnswers++
             tvResult.text = getString(R.string.true_answer)
         } else {
-            incorrectAnswers++
+            quizViewModel.incorrectAnswers++
             tvResult.text = getString(R.string.false_answer)
         }
     }
