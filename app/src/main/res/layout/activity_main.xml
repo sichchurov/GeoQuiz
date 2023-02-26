@@ -1,90 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
         tools:text="@string/question_australia" />
 
     <TextView
         android:id="@+id/tvResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="18dp"
+        android:textColor="@color/black"
         android:textSize="18sp"
         android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/tvTitle"
+        app:layout_constraintStart_toStartOf="@+id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
         tools:text="Write" />
 
     <Button
-        android:id="@+id/btRestartQuiz"
-        style="?android:attr/button"
+        android:id="@+id/btTrue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/material_dynamic_primary60"
-        android:visibility="gone"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/true_button"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/tvResult" />
+
+    <Button
+        android:id="@+id/btFalse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/false_button"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/tvResult" />
+
+    <ImageButton
+        android:id="@+id/btPrev"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/prev_button"
+        android:src="@drawable/arrow_left"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+
+        app:layout_constraintTop_toBottomOf="@+id/btTrue"
+        app:tint="@color/purple_500" />
+
+    <ImageButton
+        android:id="@+id/btNext"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:contentDescription="@string/next_button"
+        android:src="@drawable/arrow_right"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/btFalse"
+        app:tint="@color/purple_500" />
+
+    <Button
+        android:id="@+id/btCheat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/cheat_button"
+        app:layout_constraintEnd_toEndOf="@+id/btNext"
+        app:layout_constraintStart_toStartOf="@+id/btPrev"
+        app:layout_constraintTop_toBottomOf="@+id/btPrev" />
+
+    <Button
+        android:id="@+id/btReset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/try_again"
-        android:textColor="#212121" />
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/btCheat"
+        app:layout_constraintStart_toStartOf="@id/btCheat"
+        app:layout_constraintTop_toBottomOf="@id/btCheat" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
-        <Button
-            android:id="@+id/btTrue"
-            style="?android:attr/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:backgroundTint="@color/material_dynamic_primary60"
-            android:text="@string/true_button"
-            android:textColor="#212121" />
-
-        <Button
-            android:id="@+id/btFalse"
-            style="?android:attr/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:backgroundTint="@color/material_dynamic_primary60"
-            android:text="@string/false_button"
-            android:textColor="#212121" />
-
-    </LinearLayout>
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="179dp" />
 
-        <ImageButton
-            android:id="@+id/btPrev"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:backgroundTint="@color/material_dynamic_primary60"
-            android:contentDescription="@string/prev_button"
-            android:padding="18dp"
-            android:src="@drawable/arrow_left" />
-
-        <ImageButton
-            android:id="@+id/btNext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:backgroundTint="@color/material_dynamic_primary60"
-            android:contentDescription="@string/next_button"
-            android:padding="18dp"
-            android:src="@drawable/arrow_right" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

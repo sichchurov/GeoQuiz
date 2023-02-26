@@ -16,4 +16,10 @@
     <string name="false_answer">You are wrong</string>
     <string name="try_again">Try again?</string>
     <string name="statistic">Wrong answers: %1$s, Right answers: %2$s</string>
+
+    <string name="warning_text">Are you sure you want to do this?</string>
+    <string name="show_answer_button">Show Answer</string>
+    <string name="cheat_button">Cheat!</string>
+    <string name="judgment_toast">Cheating is wrong.</string>
+
 </resources>
