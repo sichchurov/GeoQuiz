@@ -1,8 +1,12 @@
 package com.shchurovsi.geoquiz
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Button
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.shchurovsi.geoquiz.databinding.ActivityMainBinding
@@ -17,6 +21,8 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
+    private var getContent: ActivityResultLauncher<Intent>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -29,10 +35,10 @@ class MainActivity : AppCompatActivity() {
             btNext.setOnClickListener { nextQuestion() }
             btPrev.setOnClickListener { prevQuestion() }
             btReset?.setOnClickListener { restartQuiz() }
-            btCheat.setOnClickListener {
-
-            }
+            btCheat.setOnClickListener { cheatResult() }
         }
+
+        isCheater()
     }
 
     private fun trueAnswer() {
@@ -43,13 +49,6 @@ class MainActivity : AppCompatActivity() {
     private fun falseAnswer() {
         checkAnswer(false)
         showResult()
-    }
-
-    private fun mark() {
-        binding.apply {
-            btTrue.isActivated = false
-            btTrue.alpha = 0.5f
-        }
     }
 
     /**
@@ -75,6 +74,7 @@ class MainActivity : AppCompatActivity() {
             btFalse.visibility = View.VISIBLE
             btCheat.visibility = View.VISIBLE
             tvResult.visibility = View.GONE
+            tvCheater?.visibility = View.INVISIBLE
         }
     }
 
@@ -148,6 +148,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun cheatResult() {
+        val answer = quizViewModel.currentQuestionAnswer
+        getContent?.launch(CheatActivity.newIntent(this@MainActivity, answer))
+    }
 
+    private fun isCheater() {
+        getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            Log.d(Constance.MAIN_ACTIVITY, "${result.resultCode == Activity.RESULT_OK}")
+            if (result.resultCode == RESULT_OK && result.data != null) {
+                binding.tvCheater?.text = result.data?.getStringExtra(Constance.CHEATER)
+                binding.tvCheater?.visibility = View.VISIBLE
+            }
+        }
+    }
 
 }

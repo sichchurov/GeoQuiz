@@ -95,6 +95,22 @@
         app:layout_constraintStart_toStartOf="@id/btCheat"
         app:layout_constraintTop_toBottomOf="@id/btCheat" />
 
+    <TextView
+        android:id="@+id/tvCheater"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="#EA004F"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="@string/cheater"
+        android:textColor="@color/black"
+        android:textSize="26sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
