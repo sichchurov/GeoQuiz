@@ -1,14 +1,14 @@
 package com.shchurovsi.geoquiz
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.shchurovsi.geoquiz.CheatActivity.ConstanceCheatActivity.ANSWER_STRING
+import com.shchurovsi.geoquiz.CheatActivity.ConstanceCheatActivity.CHEATER
 import com.shchurovsi.geoquiz.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -34,11 +34,13 @@ class MainActivity : AppCompatActivity() {
             btFalse.setOnClickListener { falseAnswer() }
             btNext.setOnClickListener { nextQuestion() }
             btPrev.setOnClickListener { prevQuestion() }
-            btReset?.setOnClickListener { restartQuiz() }
-            btCheat.setOnClickListener { cheatResult() }
+            btReset.setOnClickListener { restartQuiz() }
+            btCheat.setOnClickListener { cheatIntentLaunch() }
         }
 
-        isCheater()
+        cheatIntentResult()
+        viewCheaterAchievement()
+
     }
 
     private fun trueAnswer() {
@@ -60,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             btFalse.visibility = View.GONE
             btCheat.visibility = View.GONE
             tvResult.visibility = View.VISIBLE
-            
+
         }
     }
 
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             btFalse.visibility = View.VISIBLE
             btCheat.visibility = View.VISIBLE
             tvResult.visibility = View.GONE
-            tvCheater?.visibility = View.INVISIBLE
+            tvCheater.visibility = View.INVISIBLE
         }
     }
 
@@ -125,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         tvTitle.visibility = View.GONE
         btNext.visibility = View.GONE
         btPrev.visibility = View.GONE
-        btReset?.visibility = View.VISIBLE
+        btReset.visibility = View.VISIBLE
         tvResult.text = getString(
             R.string.statistic,
             "${quizViewModel.incorrectAnswers}",
@@ -144,21 +146,46 @@ class MainActivity : AppCompatActivity() {
             updateQuestion()
             btNext.visibility = View.VISIBLE
             btPrev.visibility = View.VISIBLE
-            btReset?.visibility = View.GONE
+            btReset.visibility = View.GONE
         }
     }
 
-    private fun cheatResult() {
-        val answer = quizViewModel.currentQuestionAnswer
-        getContent?.launch(CheatActivity.newIntent(this@MainActivity, answer))
+    private fun cheatIntentLaunch() {
+        getContent?.launch(
+            CheatActivity.newIntent(
+                this@MainActivity,
+                quizViewModel.currentQuestionAnswer
+            )
+        )
     }
 
-    private fun isCheater() {
-        getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            Log.d(Constance.MAIN_ACTIVITY, "${result.resultCode == Activity.RESULT_OK}")
-            if (result.resultCode == RESULT_OK && result.data != null) {
-                binding.tvCheater?.text = result.data?.getStringExtra(Constance.CHEATER)
-                binding.tvCheater?.visibility = View.VISIBLE
+    private fun cheatIntentResult() {
+
+        if (applicationContext == null) return
+
+        getContent =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+                if (result.resultCode == RESULT_OK) {
+
+                    quizViewModel.isCheater =
+                        result.data?.getBooleanExtra(CHEATER, false) ?: false
+
+                    quizViewModel.answerString =
+                        result.data?.getStringExtra(ANSWER_STRING) ?: ""
+
+                    viewCheaterAchievement()
+                }
+            }
+    }
+
+    private fun viewCheaterAchievement() {
+        if (quizViewModel.isCheater) {
+            binding.apply {
+                tvCheater.visibility = View.VISIBLE
+                tvResult.visibility = View.VISIBLE
+                tvResult.text = quizViewModel.answerString
+                showResult()
             }
         }
     }

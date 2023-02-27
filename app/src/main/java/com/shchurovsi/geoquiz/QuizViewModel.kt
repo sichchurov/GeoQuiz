@@ -14,9 +14,14 @@ class QuizViewModel : ViewModel() {
         Question(R.string.question_asia, true)
     )
 
+
     private var _currentIndex = 0
     private var _correctAnswers = 0
     private var _incorrectAnswers = 0
+
+    // TODO: Encapsulate
+    var isCheater = false
+    var answerString = ""
 
     val currentIndex: Int
         get() = _currentIndex
@@ -32,7 +37,6 @@ class QuizViewModel : ViewModel() {
 
     val currentQuestionAnswer: Boolean
         get() = questionBank[currentIndex].answer
-
 
     fun increaseIndex() {
         _currentIndex++
